@@ -4,10 +4,10 @@ import os
 # 加载.env文件
 load_dotenv()
 
-from langchain_community.document_loaders import DirectoryLoader
+from langchain_community.document_loaders import DirectoryLoader, TextLoader, PDFPlumberLoader
 from langchain_text_splitters import CharacterTextSplitter
 
-loader = DirectoryLoader("./doc")
+loader = PDFPlumberLoader("doc/Book_20250121.pdf")
 documents = loader.load()
 
 doc_splitter = CharacterTextSplitter(
@@ -15,6 +15,12 @@ doc_splitter = CharacterTextSplitter(
     chunk_overlap=10,
 )
 all_splits = doc_splitter.split_documents(documents)
+print("\n=== 文档分块结果 ===")
+for i, chunk in enumerate(all_splits, 1):
+    print(f"\n--- 第 {i} 个文档块 ---")
+    print(f"内容: {chunk.page_content}")
+    print(f"元数据: {chunk.metadata}")
+    print("-" * 50)
 
 # 设置嵌入模型
 from langchain_huggingface import HuggingFaceEmbeddings
